@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Navbar from '@/components/ui/navbar';
 
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 md:p-8">
+      <Navbar />
       <main className="max-w-6xl w-full flex flex-col gap-8 items-center">
         {/* Hero Section */}
         <section className="w-full text-center py-12 md:py-24">
