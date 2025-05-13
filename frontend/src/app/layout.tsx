@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: "HCT Web",
   description: "HCT Web Analysis",
     icons: {
-    icon: '/icon.png',
+      icon: '/icon.png',
     },
 };
 

@@ -20,7 +20,6 @@ export async function POST(request: Request) {
     You are a helpful assistant for the HCT Survival Prediction Tool. 
     Use the following context to answer the user's question:.
     
-
     Context:
         ${history.map((msg: { role: string; content: string }) => {
             return `${msg.role}: ${msg.content}`;
