@@ -48,10 +48,10 @@ export default function Home() {
             
             <Card>
               <CardHeader>
-                <CardTitle>Clinical Integration</CardTitle>
+                <CardTitle>Helpful Chatbot</CardTitle>
               </CardHeader>
               <CardContent>
-                <p>Seamlessly integrates with clinical workflows, providing actionable insights at the point of care.</p>
+                <p>Afraid to consult to a doctor? Don&apos;t worry, we got you, you can chat with our chatbot first if you want. It&apos;s free.</p>
               </CardContent>
             </Card>
           </div>
