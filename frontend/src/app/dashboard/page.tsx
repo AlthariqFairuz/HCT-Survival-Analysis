@@ -7,26 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, AlertCircle, CheckCircle, TrendingUp } from 'lucide-react';
 import Navbar from '@/components/ui/navbar';
+import { PredictionResult } from '@/types/PredictionResult'; 
+import { PredictionForm } from '@/types/PredictionForm'; 
 
-interface PredictionForm {
-  donor_age: string;
-  age_at_hct: string;
-  prim_disease_hct: string;
-  year_hct: string;
-  dri_score: string;
-  comorbidity_score: string;
-  gvhd_proph: string;
-  karnofsky_score: string;
-  race_group: string;
-  cyto_score: string;
-}
-
-interface PredictionResult {
-  survival_probability: number;
-  risk_category: string;
-  confidence_interval: [number, number];
-  recommendations: string[];
-}
 
 export default function PredictionDashboard() {
   const [formData, setFormData] = useState<PredictionForm>({
@@ -192,20 +175,6 @@ export default function PredictionDashboard() {
                         </Select>
                       </div>
 
-                      {/* Comorbidity Score */}
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Comorbidity Score (HCT-CI)</label>
-                        <Input
-                          type="number"
-                          min="0"
-                          max="20"
-                          value={formData.comorbidity_score}
-                          onChange={(e) => handleInputChange('comorbidity_score', e.target.value)}
-                          placeholder="e.g., 3"
-                          required
-                        />
-                      </div>
-
                       {/* GVHD Prophylaxis */}
                       <div className="space-y-2">
                         <label className="text-sm font-medium">GVHD Prophylaxis</label>
@@ -221,9 +190,62 @@ export default function PredictionDashboard() {
                         </Select>
                       </div>
 
+                      {/* Comorbidity Score */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Comorbidity Score (HCT-CI)</label>
+                        <p className="text-xs text-muted-foreground">
+                            <a 
+                              href="https://www.mdcalc.com/calc/3980/hematopoietic-cell-transplantation-specific-comorbidity-index-hct-ci" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline"
+                            >
+                              Calculate here
+                            </a>
+                          </p>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="20"
+                          value={formData.comorbidity_score}
+                          onChange={(e) => handleInputChange('comorbidity_score', e.target.value)}
+                          placeholder="e.g., 3"
+                          required
+                        />
+                      </div>
+
+                      {/* Race Group */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Race/Ethnicity</label>
+                         <p className="text-xs text-muted-foreground">Choose your ethnicity</p>
+                        <Select value={formData.race_group} onValueChange={(value) => handleInputChange('race_group', value)}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select race/ethnicity" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="more_than_one">More than one race</SelectItem>
+                            <SelectItem value="asian">Asian</SelectItem>
+                            <SelectItem value="white">White</SelectItem>
+                            <SelectItem value="american_indian">American Indian or Alaska Native</SelectItem>
+                            <SelectItem value="native_hawaiian">Native Hawaiian or other Pacific Islander</SelectItem>
+                            <SelectItem value="black">Black or African-American</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
                       {/* Karnofsky Score */}
                       <div className="space-y-2">
                         <label className="text-sm font-medium">Karnofsky Performance Score</label>
+                          <p className="text-xs text-muted-foreground">
+                            <a 
+                              href="https://www.mdcalc.com/calc/3168/karnofsky-performance-status-scale" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline"
+                            >
+                              Calculate here
+                            </a>
+                          </p>
                         <Select value={formData.karnofsky_score} onValueChange={(value) => handleInputChange('karnofsky_score', value)}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select KPS" />
@@ -238,26 +260,20 @@ export default function PredictionDashboard() {
                         </Select>
                       </div>
 
-                      {/* Race Group */}
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Race/Ethnicity</label>
-                        <Select value={formData.race_group} onValueChange={(value) => handleInputChange('race_group', value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select race/ethnicity" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="caucasian">Caucasian</SelectItem>
-                            <SelectItem value="hispanic">Hispanic</SelectItem>
-                            <SelectItem value="african_american">African American</SelectItem>
-                            <SelectItem value="asian">Asian</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
                       {/* Cytogenetic Score */}
                       <div className="space-y-2">
                         <label className="text-sm font-medium">Cytogenetic Risk Score</label>
+                          <p className="text-xs text-muted-foreground">
+                            <a 
+                              href="https://www.mdcalc.com/calc/3981/revised-international-prognostic-scoring-system-ipss-r-myelodysplastic-syndrome-mds" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline"
+                            >
+                              Calculate here
+                            </a>
+                          </p>
+                        
                         <Select value={formData.cyto_score} onValueChange={(value) => handleInputChange('cyto_score', value)}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select cytogenetic risk" />

@@ -48,23 +48,22 @@ def load_model():
 def get_feature_defaults() -> Dict[str, Any]:
     """Get default values for features not provided by user"""
     return {
-        # Categorical features - use numerical codes (0, 1, 2, etc.) as they were factorized
-        'tbi_status': 0,  # 'no' -> 0, 'yes' -> 1
-        'graft_type': 0,  # Most common type -> 0
+        'tbi_status': 0, 
+        'graft_type': 0,  
         'vent_hist': 0,
         'renal_issue': 0,
         'pulm_severe': 0,
-        'cmv_status': 0,  # 'negative' -> 0
+        'cmv_status': 0,  
         'rituximab': 0,
         'prod_type': 0,
-        'conditioning_intensity': 0,  # 'myeloablative' -> 0
+        'conditioning_intensity': 0,  
         'ethnicity': 0,
         'in_vivo_tcd': 0,
         'hepatic_severe': 0,
         'prior_tumor': 0,
         'peptic_ulcer': 0,
         'rheum_issue': 0,
-        'sex_match': 0,  # 'match' -> 0
+        'sex_match': 0,
         'hepatic_mild': 0,
         'donor_related': 0,
         'melphalan_dose': 0,
@@ -80,7 +79,6 @@ def get_feature_defaults() -> Dict[str, Any]:
         'tce_div_match': 0,
         'cyto_score_detail': 0,
         
-        # Numerical features - median values as float32
         'hla_match_c_high': 1.0,
         'hla_high_res_8': 7.0,
         'hla_low_res_6': 6.0,
@@ -119,8 +117,12 @@ def preprocess_input(form_data: Dict[str, str]) -> pd.DataFrame:
             'tacrolimus_mtx': 0, 'cyclosporine_mtx': 1, 'other': 2
         },
         'race_group': {
-            'caucasian': 0, 'hispanic': 1, 'african_american': 2, 
-            'asian': 3, 'other': 4
+            "more_than_one": 0,
+            "asian": 1,
+            "white": 2,
+            "american_indian": 3,
+            "native_hawaiian": 4,
+            "black": 5
         },
         'cyto_score': {
             'favorable': 0, 'intermediate': 1, 'poor': 2, 'very_poor': 3
@@ -177,10 +179,9 @@ def preprocess_input(form_data: Dict[str, str]) -> pd.DataFrame:
         'hla_low_res_10', 'year_hct'
     ]
     
-    # Ensure all required features are present
     expected_features = categorical_features + numerical_features
     
-    # Add missing columns with defaults
+    # add missing columns with defaults
     for feature in expected_features:
         if feature not in df.columns:
             if feature in categorical_features:
@@ -196,7 +197,7 @@ def preprocess_input(form_data: Dict[str, str]) -> pd.DataFrame:
         if feature in df.columns:
             df[feature] = df[feature].astype("float32")
     
-    # Reorder columns to match training data
+    # reorder columns to match training data
     df = df[expected_features]
     
     logger.info(f"Preprocessed data shape: {df.shape}")
@@ -258,7 +259,6 @@ def predict():
         if model is None:
             return jsonify({'error': 'Model not loaded'}), 500
         
-        # Get form data
         form_data = request.get_json()
         
         if not form_data:
@@ -266,7 +266,7 @@ def predict():
         
         logger.info(f"Received form data: {form_data}")
         
-        # Validate required fields
+        # validate required fields
         required_fields = ['donor_age', 'age_at_hct', 'prim_disease_hct', 'year_hct', 
                           'dri_score', 'comorbidity_score', 'gvhd_proph', 'karnofsky_score', 
                           'race_group', 'cyto_score']
@@ -275,20 +275,18 @@ def predict():
         if missing_fields:
             return jsonify({'error': f'Missing required fields: {missing_fields}'}), 400
         
-        # Preprocess input
         logger.info("Preprocessing input data...")
         input_df = preprocess_input(form_data)
         
-        # Make prediction
         try:
             logger.info(f"Making prediction with model type: {type(model)}")
             
-            # Use booster to bypass sklearn categorical validation
+            # booster to bypass sklearn categorical validation
             booster = model.booster_
             prediction = booster.predict(input_df.values)[0]
             logger.info(f"Raw prediction: {prediction}")
             
-            # Apply sigmoid if needed
+            # apply sigmoid if needed
             if prediction < 0 or prediction > 1:
                 prediction = 1 / (1 + np.exp(-np.clip(prediction, -500, 500)))
                 logger.info(f"After sigmoid: {prediction}")
@@ -299,7 +297,6 @@ def predict():
             logger.error(f"Prediction error: {pred_error}")
             raise pred_error
         
-        # Ensure prediction is in [0, 1] range
         prediction = max(0.0, min(1.0, prediction))
         
         # confidence interval (simplified)
@@ -309,7 +306,6 @@ def predict():
         # Categorize risk
         risk_category = categorize_risk(prediction)
         
-        # Generate recommendations
         recommendations = generate_recommendations(prediction, risk_category, form_data)
 
         response = {
