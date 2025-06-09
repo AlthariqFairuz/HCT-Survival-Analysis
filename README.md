@@ -2,6 +2,8 @@
 
 A clinical decision support system for predicting survival probability after Hematopoietic Cell Transplantation (HCT) using machine learning.
 
+**⚠️ Please note that the form for the prediction in the web is greatly simplified, the prediction might be not as good as in the kaggle.**
+
 ## 🚀 Backend Setup & Deployment
 
 ### Prerequisites
