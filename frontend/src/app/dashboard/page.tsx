@@ -336,7 +336,7 @@ export default function PredictionDashboard() {
                           {(result.survival_probability * 100).toFixed(1)}%
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          5-Year Survival Probability
+                          15-Year Survival Probability
                         </div>
                       </div>
 
